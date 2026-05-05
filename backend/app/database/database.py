@@ -8,19 +8,27 @@ To switch databases later (e.g. async PostgreSQL with asyncpg), only this file
 needs to change — all other layers remain identical.
 """
 import os
+from pathlib import Path
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, DeclarativeBase
 from dotenv import load_dotenv
 
-# Load .env from the backend root directory
-load_dotenv()
+# Load local backend settings when present. The real deployment should use
+# Vercel environment variables, not a committed .env file.
+load_dotenv(dotenv_path=Path(__file__).resolve().parents[2] / ".env")
+
+DEFAULT_SQLITE_URL = (
+    "sqlite:////tmp/mindease.db"
+    if os.getenv("VERCEL")
+    else f"sqlite:///{Path(__file__).resolve().parents[2] / 'Mindease.db'}"
+)
 
 # ─── Database URL ──────────────────────────────────────────────────────────────
 # PostgreSQL: postgresql+psycopg2://user:password@host:port/dbname
 # Default falls back to a safe local SQLite for development without any setup
 DATABASE_URL: str = os.getenv(
     "DATABASE_URL",
-    "sqlite:///./Mindease.db",  # fallback for quick local testing
+    DEFAULT_SQLITE_URL,
 )
 
 # Pool args only valid for PostgreSQL (SQLite uses a StaticPool or NullPool)

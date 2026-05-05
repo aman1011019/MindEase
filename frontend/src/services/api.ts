@@ -13,10 +13,7 @@
 import axios, { AxiosResponse } from 'axios';
 
 // ─── Base URL ─────────────────────────────────────────────────────────────────
-// Change this to your server IP when running on a physical device.
-// Android emulator: use 10.0.2.2 instead of localhost
-// iOS simulator / Expo Go on device: use your machine's LAN IP (e.g. 192.168.1.5)
-const BASE_URL = 'http://localhost:8000';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '/api';
 
 const client = axios.create({
   baseURL: BASE_URL,
