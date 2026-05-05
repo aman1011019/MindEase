@@ -78,6 +78,11 @@ app.include_router(chat.router)
 app.include_router(diary.router)
 app.include_router(insights.router)
 
+app.include_router(mood.router, prefix="/api")
+app.include_router(chat.router, prefix="/api")
+app.include_router(diary.router, prefix="/api")
+app.include_router(insights.router, prefix="/api")
+
 
 # ─── Health check ──────────────────────────────────────────────────────────────
 @app.get("/", tags=["Health"])
@@ -89,3 +94,10 @@ def root():
         "version": "2.0.0",
         "docs": "/docs",
     }
+
+
+@app.get("/api", tags=["Health"])
+@app.get("/api/", tags=["Health"])
+def api_root():
+    """Health check for Vercel API rewrites."""
+    return root()
